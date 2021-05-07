@@ -31,31 +31,25 @@ class Portfolio extends ChangeNotifier {
   List<PortfolioItem> _portfolioItemList = [];
 
   Future<Map<String, dynamic>> getPortfolioList(userID) async {
-    _portfolioItemList = [];
-    _portfolioItemList.remove(true);
-    print('Getting Portfolio');
-    try {
-      final dataSnapshot = await FirebaseFirestore.instance
-          .collection('portfolio')
-          .where('userID', isEqualTo: userID)
-          .get();
-      final data = dataSnapshot.docs;
-      data.forEach(
-        (e) {
-          var map = e.data();
-          // print(map['name']);
-          // print('Portfolio Added: ${map['name']}');
-          map['portfolioID'] = e.id;
-          _portfolioItemList.add(PortfolioItem.fromJson(map));
-        },
-      );
-    } catch (e) {
-      print(e);
+    if (_portfolioItemList.isEmpty) {
+      print('Getting Portfolio');
+      try {
+        final dataSnapshot = await FirebaseFirestore.instance
+            .collection('portfolio')
+            .where('userID', isEqualTo: userID)
+            .get();
+        final data = dataSnapshot.docs;
+        data.forEach(
+          (e) {
+            var map = e.data();
+            map['portfolioID'] = e.id;
+            _portfolioItemList.add(PortfolioItem.fromJson(map));
+          },
+        );
+      } catch (e) {
+        print(e);
+      }
     }
-    print('done');
-    _portfolioItemList.forEach((e) {
-      // print('GetPortfolioList Func: ${e.name} ${e.organizationID} ${e.isActive()}');
-    });
     List<PortfolioItem> education = [];
     List<PortfolioItem> experience = [];
     _portfolioItemList.forEach((e) {
@@ -66,7 +60,6 @@ class Portfolio extends ChangeNotifier {
       }
     });
     final map = {'education': education, 'experience': experience};
-    //print(map);
     return map;
   }
 
@@ -77,7 +70,6 @@ class Portfolio extends ChangeNotifier {
   // ignore: missing_return
   Future<String> addNewPortfolio(
       Map<String, dynamic> newPortfolioItemDetails) async {
-    // print('In Portfolio.dart $newPortfolioDetails');
     try {
       var newPortfolioItem =
           await FirebaseFirestore.instance.collection('portfolio').add({
@@ -107,7 +99,6 @@ class Portfolio extends ChangeNotifier {
   }
 
   Future<void> editPortfolio(PortfolioItem portfolioItemDetails) async {
-    // print('In Portfolio.dart $newPortfolioDetails');
     var i = _portfolioItemList.indexWhere(
         (element) => element.portfolioID == portfolioItemDetails.portfolioID);
     _portfolioItemList[i].name = portfolioItemDetails.name;
@@ -131,7 +122,6 @@ class Portfolio extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
-    // print(_portfolioItemList[i].amountNeeded);
     notifyListeners();
   }
 
