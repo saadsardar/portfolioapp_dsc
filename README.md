@@ -17,7 +17,7 @@ Topis Covered:
 
 - Provider
     State Management
-    
+
 - Firebase Project Setup On Android
 
 - Firebase:
@@ -32,7 +32,8 @@ Topis Covered:
 - Image picker
 
 
-
+- Add Firebase To Android Flutter: https://firebase.google.com/docs/flutter/setup?platform=android
+- Install Packages: https://pub.dev/  
 
 For any queries or questions feel free to contact us:
 - Wajahat Ali: k180363@nu.edu.pk
