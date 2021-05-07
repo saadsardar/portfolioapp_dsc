@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portfolioapp_dsc/Model/portfolio.dart';
 import 'package:portfolioapp_dsc/Model/user.dart';
+import 'package:portfolioapp_dsc/Screens/RegisterScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'AddNewItem.dart';
@@ -162,6 +163,31 @@ class _MainScreenState extends State<MainScreen> {
         ],
         title: Text('Portfolio'),
       ),
+      drawer: Drawer(
+          child: Column(
+        children: [
+          SizedBox(
+            height: 100,
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.exit_to_app,
+              size: 30,
+              color: Theme.of(context).primaryColor,
+            ),
+            title: Text(
+              'Sign out',
+              style: TextStyle(
+                  color: Theme.of(context).primaryColor, fontSize: 20),
+            ),
+            onTap: () async {
+              await Provider.of<User>(context, listen: false).signOut();
+              Navigator.of(context)
+                  .pushReplacementNamed(RegisterPageUser.routeName);
+            },
+          ),
+        ],
+      )),
       body: userInfo == null
           ? Center(
               child: CircularProgressIndicator(),

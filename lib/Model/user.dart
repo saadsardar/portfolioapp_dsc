@@ -1,5 +1,3 @@
-// import 'package:flutter/material.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseUser;
 import 'package:flutter/cupertino.dart';
@@ -12,7 +10,6 @@ class User extends ChangeNotifier {
   String title;
   String picture;
 
-  //String dpurl;
   User({
     this.userId,
     this.email,
@@ -73,8 +70,8 @@ class User extends ChangeNotifier {
 
   Future<String> setUser() async {
     String errormsg = '';
-    // print('User ID Before: $userId');
-    if (FirebaseUser.FirebaseAuth.instance.currentUser != null) {
+    if (FirebaseUser.FirebaseAuth.instance.currentUser != null ||
+        name.isEmpty) {
       if (userId == null) {
         var currentUser = FirebaseUser.FirebaseAuth.instance.currentUser;
         final id = currentUser.uid;
@@ -86,8 +83,7 @@ class User extends ChangeNotifier {
             .doc(userId)
             .get();
         if (!userSnap.exists) {
-          errormsg =
-              'There Was An Error In Creating Your Account.';
+          errormsg = 'There Was An Error In Creating Your Account.';
           return errormsg;
         }
         final userInfo = userSnap.data();
@@ -105,7 +101,6 @@ class User extends ChangeNotifier {
 
   Future<String> registerUser(
       String emailAdd, String pass, String name, String title) async {
-    // UserCredential userCredential;
     var msg = '';
     try {
       final firebaseUser = await FirebaseUser.FirebaseAuth.instance
@@ -115,8 +110,8 @@ class User extends ChangeNotifier {
       email = emailAdd;
       name = name;
       title = title;
-      // picture =
-      //     "https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-alt-512.png";
+      picture =
+          "https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-alt-512.png";
       await FirebaseFirestore.instance.collection('users').doc(userId).set(
         {
           'email': email,

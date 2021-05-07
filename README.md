@@ -1,16 +1,39 @@
-# portfolioapp_dsc
+Portfolio App
+DSC Session 4
+07/05/2021
 
-A new Flutter project.
 
-## Getting Started
+Topis Covered:
 
-This project is a starting point for a Flutter application.
+- Filing vs Database
+- SQL vs NOSQL
+    SQL : 
+        Structured Query Language
+        SELECT * FROM *
+        Tables, Strong Schema, Relations, Queries, Joints, No or less redundant entries
+    NOSQL : 
+        Key Value Store (JSON)
+        Collections, No Schema, Less relations / Fast Query, Duplicate Data
 
-A few resources to get you started if this is your first Flutter project:
+- Provider
+    State Management
+    
+- Firebase Project Setup On Android
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- Firebase:
+    Authentication
+    Firestore Database
+    FIrebase Storage
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Routes
+- Firebase Auth (Sign up/ Sign in/ Logout)
+- Firestore (Create, Read,  Update, Delete)
+
+- Image picker
+
+
+
+
+For any queries or questions feel free to contact us:
+- Wajahat Ali: k180363@nu.edu.pk
+- Syed Saad Ali: k180228@nu.edu.pk
