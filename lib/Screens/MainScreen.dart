@@ -24,22 +24,30 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   setUser() async {
-    final response = await Provider.of<User>(context, listen: false).setUser();
-    if (response == '') {
-      userInfo = Provider.of<User>(context, listen: false);
-      final portfolioMap = await Provider.of<Portfolio>(context, listen: false)
-          .getPortfolioList(userInfo.userId);
-      //print(portfolioMap);
-      experienceList = portfolioMap['experience'] as List<PortfolioItem>;
-      //print(experienceList);
-      educationList = portfolioMap['education'] as List<PortfolioItem>;
-      setState(() {});
+    if (educationList.isEmpty && educationList.isEmpty) {
+      final response =
+          await Provider.of<User>(context, listen: false).setUser();
+      if (response == '') {
+        userInfo = Provider.of<User>(context, listen: false);
+        await Provider.of<Portfolio>(context, listen: false)
+            .getPortfolioList(userInfo.userId);
+        // //print(portfolioMap);
+        // experienceList = portfolioMap['experience'] as List<PortfolioItem>;
+        // //print(experienceList);
+        // educationList = portfolioMap['education'] as List<PortfolioItem>;
+        // print('Edu');
+        // print(educationList.length);
+        setState(() {});
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
+    experienceList = Provider.of<Portfolio>(context).experienceList;
+    educationList = Provider.of<Portfolio>(context).educationList;
 
     Widget buildListItem(String title) {
       return Padding(
@@ -110,7 +118,7 @@ class _MainScreenState extends State<MainScreen> {
         },
         onDismissed: (direction) {
           Provider.of<Portfolio>(context, listen: false)
-              .deleteCase(item.portfolioID);
+              .deletePortfolioItem(item.portfolioID, item.type);
         },
         child: ListTile(
           title: Text(
@@ -137,17 +145,6 @@ class _MainScreenState extends State<MainScreen> {
       );
     }
 
-    // ignore: missing_return
-    Widget buildExperience() {
-      for (var item in experienceList) return buildPortfolioItem(item);
-    }
-
-    // ignore: missing_return
-    Widget buildEducation() {
-      print(educationList);
-      for (var item in educationList) return buildPortfolioItem(item);
-    }
-
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -157,7 +154,7 @@ class _MainScreenState extends State<MainScreen> {
                 Navigator.of(context)
                     .pushNamed(NewPortfolioItemScreen.routeName)
                     .then((value) {
-                  setState(() {});
+                  // setState(() {});
                 });
               })
         ],
@@ -223,15 +220,15 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                   Positioned(
-                    top: size.height * 0.27,
+                    top: size.height * 0.25,
                     child: Container(
-                      height: size.height * 0.7,
+                      // height: size.height * 0.7,
+                      height: double.maxFinite,
                       width: size.width,
                       child: ListView(
                         children: [
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            // mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SizedBox(
                                 width: size.width * 0.8,
@@ -261,15 +258,17 @@ class _MainScreenState extends State<MainScreen> {
                                   })
                             ],
                           ),
-                          SizedBox(
-                            height: 30,
-                          ),
+                          SizedBox(height: 30),
                           if (educationList.isNotEmpty)
                             buildHeading('Education'),
-                          if (educationList.isNotEmpty) buildEducation(),
+                          if (educationList.isNotEmpty)
+                            for (var item in educationList)
+                              buildPortfolioItem(item),
                           if (experienceList.isNotEmpty)
                             buildHeading('Experience'),
-                          if (experienceList.isNotEmpty) buildExperience(),
+                          if (experienceList.isNotEmpty)
+                            for (var item in experienceList)
+                              buildPortfolioItem(item),
                         ],
                       ),
                     ),

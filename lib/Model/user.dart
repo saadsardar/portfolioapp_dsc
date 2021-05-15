@@ -70,8 +70,8 @@ class User extends ChangeNotifier {
 
   Future<String> setUser() async {
     String errormsg = '';
-    if (FirebaseUser.FirebaseAuth.instance.currentUser != null ||
-        name.isEmpty) {
+    if (FirebaseUser.FirebaseAuth.instance.currentUser != null &&
+        name == null) {
       if (userId == null) {
         var currentUser = FirebaseUser.FirebaseAuth.instance.currentUser;
         final id = currentUser.uid;

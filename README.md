@@ -5,7 +5,7 @@ DSC Session 4
 
 Topis Covered:
 
-- Filing vs Database
+- Filing (Unstructured) vs Database (Structured)
 - SQL vs NOSQL
     SQL : 
         Structured Query Language
@@ -25,8 +25,10 @@ Topis Covered:
     Firestore Database
     FIrebase Storage
 
-- Routes
 - Firebase Auth (Sign up/ Sign in/ Logout)
+
+- Routes
+
 - Firestore (Create, Read,  Update, Delete)
 
 - Image picker

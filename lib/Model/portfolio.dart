@@ -28,47 +28,51 @@ class PortfolioItem {
 }
 
 class Portfolio extends ChangeNotifier {
-  List<PortfolioItem> _portfolioItemList = [];
+  List<PortfolioItem> _educationList = [];
+  List<PortfolioItem> _experienceList = [];
 
-  Future<Map<String, dynamic>> getPortfolioList(userID) async {
-    if (_portfolioItemList.isEmpty) {
-      print('Getting Portfolio');
-      try {
-        final dataSnapshot = await FirebaseFirestore.instance
-            .collection('portfolio')
-            .where('userID', isEqualTo: userID)
-            .get();
-        final data = dataSnapshot.docs;
-        data.forEach(
-          (e) {
-            var map = e.data();
-            map['portfolioID'] = e.id;
-            _portfolioItemList.add(PortfolioItem.fromJson(map));
-          },
-        );
-      } catch (e) {
-        print(e);
-      }
+  List<PortfolioItem> get educationList {
+    return [..._educationList];
+  }
+
+  List<PortfolioItem> get experienceList {
+    return [..._experienceList];
+  }
+
+  // Future<Map<String, dynamic>> getPortfolioList(userID) async {
+  Future<void> getPortfolioList(userID) async {
+    print('Getting Portfolio');
+    _educationList = [];
+    _experienceList = [];
+    try {
+      final dataSnapshot = await FirebaseFirestore.instance
+          .collection('portfolio')
+          .where('userID', isEqualTo: userID)
+          .get();
+      final data = dataSnapshot.docs;
+      data.forEach(
+        (e) {
+          var map = e.data();
+          map['portfolioID'] = e.id;
+          if (map['type'] == 'education') {
+            _educationList.add(PortfolioItem.fromJson(map));
+          } else {
+            _experienceList.add(PortfolioItem.fromJson(map));
+          }
+        },
+      );
+    } catch (e) {
+      print(e);
     }
-    List<PortfolioItem> education = [];
-    List<PortfolioItem> experience = [];
-    _portfolioItemList.forEach((e) {
-      if (e.type == "education") {
-        education.add(e);
-      } else {
-        experience.add(e);
-      }
-    });
-    final map = {'education': education, 'experience': experience};
-    return map;
+
+    // final map = {
+    //   'education': [..._educationList],
+    //   'experience': [..._experienceList]
+    // };
+    // return map;
   }
 
-  PortfolioItem getPortfoliobById(String id) {
-    return _portfolioItemList.firstWhere((e) => e.portfolioID == id);
-  }
-
-  // ignore: missing_return
-  Future<String> addNewPortfolio(
+  Future<void> addNewPortfolio(
       Map<String, dynamic> newPortfolioItemDetails) async {
     try {
       var newPortfolioItem =
@@ -80,17 +84,20 @@ class Portfolio extends ChangeNotifier {
         'type': newPortfolioItemDetails['type'],
       });
 
-      _portfolioItemList.add(
-        PortfolioItem(
-          portfolioID: newPortfolioItem.id,
-          name: newPortfolioItemDetails['name'],
-          userID: newPortfolioItemDetails['userID'],
-          description: newPortfolioItemDetails['description'],
-          date: newPortfolioItemDetails['date'],
-          type: newPortfolioItemDetails['type'],
-        ),
+      final newPotfolio = new PortfolioItem(
+        portfolioID: newPortfolioItem.id,
+        name: newPortfolioItemDetails['name'],
+        userID: newPortfolioItemDetails['userID'],
+        description: newPortfolioItemDetails['description'],
+        date: newPortfolioItemDetails['date'],
+        type: newPortfolioItemDetails['type'],
       );
-      return newPortfolioItem.id;
+
+      if (newPotfolio.type == 'education') {
+        _educationList.add(newPotfolio);
+      } else {
+        _experienceList.add(newPotfolio);
+      }
     } catch (e) {
       print(e);
     }
@@ -98,41 +105,19 @@ class Portfolio extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> editPortfolio(PortfolioItem portfolioItemDetails) async {
-    var i = _portfolioItemList.indexWhere(
-        (element) => element.portfolioID == portfolioItemDetails.portfolioID);
-    _portfolioItemList[i].name = portfolioItemDetails.name;
-    _portfolioItemList[i].description = portfolioItemDetails.description;
-    _portfolioItemList[i].date = portfolioItemDetails.date;
-    _portfolioItemList[i].type = portfolioItemDetails.type;
-    var updatedPortfolio = _portfolioItemList[i];
-
-    try {
-      await FirebaseFirestore.instance
-          .collection('portfolio')
-          .doc(updatedPortfolio.portfolioID)
-          .update(
-        {
-          'name': updatedPortfolio.name,
-          'description': updatedPortfolio.description,
-          'date': updatedPortfolio.date,
-          'title': updatedPortfolio.type,
-        },
-      );
-    } catch (e) {
-      print(e);
-    }
-    notifyListeners();
-  }
-
-  Future<String> deleteCase(String portfolioID) async {
+  Future<String> deletePortfolioItem(String portfolioID, String type) async {
     String msg = '';
     try {
       await FirebaseFirestore.instance
           .collection('portfolio')
           .doc(portfolioID)
           .delete();
-      _portfolioItemList.removeWhere((e) => e.portfolioID == portfolioID);
+
+      if (type == 'education') {
+        _educationList.removeWhere((e) => e.portfolioID == portfolioID);
+      } else {
+        _experienceList.removeWhere((e) => e.portfolioID == portfolioID);
+      }
     } catch (e) {
       msg = e.toString();
     }

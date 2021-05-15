@@ -4,7 +4,6 @@ import 'package:portfolioapp_dsc/Model/portfolio.dart';
 import 'package:portfolioapp_dsc/Model/user.dart';
 import 'package:provider/provider.dart';
 
-
 class NewPortfolioItemScreen extends StatefulWidget {
   static const routeName = '/new-item-screen';
   @override

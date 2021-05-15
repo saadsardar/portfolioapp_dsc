@@ -173,7 +173,6 @@ class _EditUserDetailScreenState extends State<EditUserDetailScreen> {
         Map<String, dynamic> userInfo = {
           'name': _name,
           'title': _title,
-          // 'dob': _dob,
           'picture': dpurl,
         };
         await Provider.of<User>(context, listen: false)
